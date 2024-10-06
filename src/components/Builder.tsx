@@ -1,6 +1,13 @@
 import { useState } from "react";
+import React from "react";
 
-export default function Builder() {
+export default function Builder({
+  formData,
+  setFormData,
+}: {
+  formData: IFormData[];
+  setFormData: React.Dispatch<React.SetStateAction<IFormData[]>>;
+}) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [fieldType, setFieldType] = useState<string>("text");
   const [label, setLabel] = useState<string>("");
@@ -19,7 +26,7 @@ export default function Builder() {
   };
 
   const handleAddField = () => {
-    const newField = {
+    const newField: IFormData = {
       type: fieldType,
       label,
       placeholder,
@@ -27,6 +34,7 @@ export default function Builder() {
       options: fieldType === "radio" || fieldType === "dropdown" ? options : [],
     };
     console.log(newField);
+    setFormData([...formData, newField]);
     setShowModal(false);
   };
 
@@ -89,7 +97,7 @@ export default function Builder() {
     <div className="relative flex flex-col justify-center">
       <button
         onClick={() => setShowModal(!showModal)}
-        className="w-fit text-white bg-cyan-900 rounded-[10px] px-4 py-3 hover:bg-cyan-700"
+        className="w-max mr-2 text-white bg-cyan-900 rounded-[10px] px-4 py-3 hover:bg-cyan-700"
       >
         Add Field
       </button>
