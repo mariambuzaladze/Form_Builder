@@ -17,6 +17,10 @@ export default function Builder({
   const [placeholder, setPlaceholder] = useState<string>("");
   const [isRequired, setIsRequired] = useState<boolean>(false);
   const [options, setOptions] = useState<string[]>([""]);
+  const [minLength, setMinLength] = useState<number>(0);
+  const [maxLength, setMaxLength] = useState<number>(100);
+  const [minValue, setMinValue] = useState<number>(0);
+  const [maxValue, setMaxValue] = useState<number>(100);
 
   const addOption = () => setOptions([...options, ""]);
   const removeOption = (index: number) => {
@@ -34,16 +38,63 @@ export default function Builder({
       label,
       placeholder,
       required: isRequired,
+      minLength: fieldType === "text" ? minLength : undefined,
+      maxLength: fieldType === "text" ? maxLength : undefined,
+      minValue: fieldType === "number" ? minValue : undefined,
+      maxValue: fieldType === "number" ? maxValue : undefined,
       options: fieldType === "radio" || fieldType === "dropdown" ? options : [],
     };
-    console.log(newField);
     setFormData([...formData, newField]);
     setShowModal(false);
+    resetFields();
+  };
+
+  const resetFields = () => {
+    setLabel("");
+    setPlaceholder("");
+    setIsRequired(false);
+    setOptions([""]);
+    setMinLength(0);
+    setMaxLength(100);
+    setMinValue(0);
+    setMaxValue(100);
   };
 
   const renderFieldOptions = () => {
     switch (fieldType) {
       case "text":
+        return (
+          <>
+            <label>Placeholder</label>
+            <input
+              type="text"
+              value={placeholder}
+              onChange={(e) => setPlaceholder(e.target.value)}
+              placeholder="Placeholder"
+              className="border border-gray-300 rounded p-2 mb-3 w-full"
+            />
+            <div className="flex mb-3">
+              <div className="mr-4">
+                <label>Min Length</label>
+                <input
+                  type="number"
+                  value={minLength}
+                  onChange={(e) => setMinLength(Number(e.target.value))}
+                  className="border border-gray-300 rounded p-2 mb-2 w-full"
+                />
+              </div>
+              <div>
+                <label>Max Length</label>
+                <input
+                  type="number"
+                  value={maxLength}
+                  onChange={(e) => setMaxLength(Number(e.target.value))}
+                  className="border border-gray-300 rounded p-2 mb-2 w-full"
+                />
+              </div>
+            </div>
+          </>
+        );
       case "number":
         return (
           <>
@@ -55,6 +106,26 @@ export default function Builder({
               placeholder="Placeholder"
               className="border border-gray-300 rounded p-2 mb-3 w-full"
             />
+            <div className="flex mb-3">
+              <div className="mr-4">
+                <label>Min Value</label>
+                <input
+                  type="number"
+                  value={minValue}
+                  onChange={(e) => setMinValue(Number(e.target.value))}
+                  className="border border-gray-300 rounded p-2 mb-2 w-full"
+                />
+              </div>
+              <div>
+                <label>Max Value</label>
+                <input
+                  type="number"
+                  value={maxValue}
+                  onChange={(e) => setMaxValue(Number(e.target.value))}
+                  className="border border-gray-300 rounded p-2 mb-2 w-full"
+                />
+              </div>
+            </div>
           </>
         );
       case "radio":
@@ -105,12 +176,14 @@ export default function Builder({
         Add Field
       </button>
 
-      <button
-        onClick={() => navigate("/result")}
-        className="w-max mr-2 text-white bg-cyan-900 rounded-[10px] px-4 py-3 hover:bg-cyan-700"
-      >
-        Submit Form
-      </button>
+      {formData.length !== 0 && (
+        <button
+          onClick={() => navigate("/result")}
+          className="w-max mr-2 text-white bg-cyan-900 rounded-[10px] px-4 py-3 hover:bg-cyan-700"
+        >
+          Submit Form
+        </button>
+      )}
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

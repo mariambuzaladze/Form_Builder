@@ -1,83 +1,95 @@
+import { useState } from "react";
+
 export default function Preview({ formData }: { formData: IFormData[] }) {
+  const [inputValues, setInputValues] = useState<
+    Record<string, string | number>
+  >({});
+  const [inputErrors, setInputErrors] = useState<Record<string, string>>({});
+
+  const handleInputChange = (field: IFormData, value: string | number) => {
+    setInputValues((prev) => ({
+      ...prev,
+      [field.label]: value,
+    }));
+
+    validateInput(field, value);
+  };
+
+  const validateInput = (field: IFormData, value: string | number) => {
+    let error = "";
+
+    if (field.required && !value) {
+      error = "This field is required.";
+    }
+
+    if (field.type === "text") {
+      if (field.minLength && String(value).length < field.minLength) {
+        error = `Minimum length is ${field.minLength} characters.`;
+      }
+      if (field.maxLength && String(value).length > field.maxLength) {
+        error = `Maximum length is ${field.maxLength} characters.`;
+      }
+    }
+
+    if (field.type === "number") {
+      if (field.minValue !== undefined && Number(value) < field.minValue) {
+        error = `Minimum value is ${field.minValue}.`;
+      }
+      if (field.maxValue !== undefined && Number(value) > field.maxValue) {
+        error = `Maximum value is ${field.maxValue}.`;
+      }
+    }
+
+    setInputErrors((prev) => ({
+      ...prev,
+      [field.label]: error,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form submitted successfully!");
+  };
+
   return (
     <div className="w-full p-4">
       <h2 className="text-xl font-semibold mb-4">Preview</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
         {formData.map((field, index) => {
-          switch (field.type) {
-            case "text":
-              return (
-                <div key={index} className="mb-3">
-                  <label className="block mb-1">{field.label}</label>
-                  <input
-                    type="text"
-                    placeholder={field.placeholder}
-                    required={field.required}
-                    className="border border-gray-300 rounded p-2 w-full"
-                  />
-                </div>
-              );
-            case "number":
-              return (
-                <div key={index} className="mb-3">
-                  <label className="block mb-1">{field.label}</label>
-                  <input
-                    type="number"
-                    placeholder={field.placeholder}
-                    required={field.required}
-                    className="border border-gray-300 rounded p-2 w-full"
-                  />
-                </div>
-              );
-            case "radio":
-              return (
-                <div key={index} className="mb-3">
-                  <label className="block mb-1">{field.label}</label>
-                  {field.options.map((option, idx) => (
-                    <div key={idx} className="flex items-center mb-2">
-                      <input
-                        type="radio"
-                        name={field.label}
-                        value={option}
-                        required={field.required}
-                        className="mr-2"
-                      />
-                      <span>{option}</span>
-                    </div>
-                  ))}
-                </div>
-              );
-            case "checkbox":
-              return (
-                <div key={index} className="mb-3">
-                  <label className="block mb-1">{field.label}</label>
-                  <input
-                    type="checkbox"
-                    required={field.required}
-                    className="mr-2"
-                  />
-                  <span>{field.label}</span>
-                </div>
-              );
-            case "dropdown":
-              return (
-                <div key={index} className="mb-3">
-                  <label className="block mb-1">{field.label}</label>
-                  <select
-                    required={field.required}
-                    className="border border-gray-300 rounded p-2 w-full"
-                  >
-                    {field.options.map((option, idx) => (
-                      <option key={idx} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              );
-            default:
-              return null;
-          }
+          return (
+            <div key={index} className="mb-3">
+              <label className="block mb-1">{field.label}</label>
+              {field.type === "text" && (
+                <input
+                  type="text"
+                  placeholder={field.placeholder}
+                  required={field.required}
+                  value={inputValues[field.label] || ""}
+                  onChange={(e) => handleInputChange(field, e.target.value)}
+                  className={`border border-gray-300 rounded p-2 w-full ${
+                    inputErrors[field.label] ? "border-red-500" : ""
+                  }`}
+                />
+              )}
+              {field.type === "number" && (
+                <input
+                  type="number"
+                  placeholder={field.placeholder}
+                  required={field.required}
+                  value={inputValues[field.label] || ""}
+                  onChange={(e) => handleInputChange(field, e.target.value)}
+                  className={`border border-gray-300 rounded p-2 w-full ${
+                    inputErrors[field.label] ? "border-red-500" : ""
+                  }`}
+                />
+              )}
+              {inputErrors[field.label] && (
+                <span className="text-red-500 text-sm">
+                  {inputErrors[field.label]}
+                </span>
+              )}
+            </div>
+          );
         })}
       </form>
     </div>
