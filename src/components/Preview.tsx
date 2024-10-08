@@ -55,42 +55,81 @@ export default function Preview({ formData }: { formData: IFormData[] }) {
     <div className="w-full p-4">
       <h2 className="text-xl font-semibold mb-4">Preview</h2>
       <form onSubmit={handleSubmit}>
-        {formData.map((field, index) => {
-          return (
-            <div key={index} className="mb-3">
-              <label className="block mb-1">{field.label}</label>
-              {field.type === "text" && (
-                <input
-                  type="text"
-                  placeholder={field.placeholder}
-                  required={field.required}
-                  value={inputValues[field.label] || ""}
-                  onChange={(e) => handleInputChange(field, e.target.value)}
-                  className={`border border-gray-300 rounded p-2 w-full ${
-                    inputErrors[field.label] ? "border-red-500" : ""
-                  }`}
-                />
-              )}
-              {field.type === "number" && (
-                <input
-                  type="number"
-                  placeholder={field.placeholder}
-                  required={field.required}
-                  value={inputValues[field.label] || ""}
-                  onChange={(e) => handleInputChange(field, e.target.value)}
-                  className={`border border-gray-300 rounded p-2 w-full ${
-                    inputErrors[field.label] ? "border-red-500" : ""
-                  }`}
-                />
-              )}
-              {inputErrors[field.label] && (
-                <span className="text-red-500 text-sm">
-                  {inputErrors[field.label]}
-                </span>
-              )}
-            </div>
-          );
-        })}
+        {formData.map((field, index) => (
+          <div key={index} className="mb-3">
+            <label className="block mb-1">{field.label}</label>
+            {field.type === "text" && (
+              <input
+                type="text"
+                placeholder={field.placeholder}
+                required={field.required}
+                value={inputValues[field.label] || ""}
+                onChange={(e) => handleInputChange(field, e.target.value)}
+                className={`border border-gray-300 rounded p-2 w-full ${
+                  inputErrors[field.label] ? "border-red-500" : ""
+                }`}
+              />
+            )}
+            {field.type === "number" && (
+              <input
+                type="number"
+                placeholder={field.placeholder}
+                required={field.required}
+                value={inputValues[field.label] || ""}
+                onChange={(e) => handleInputChange(field, e.target.value)}
+                className={`border border-gray-300 rounded p-2 w-full ${
+                  inputErrors[field.label] ? "border-red-500" : ""
+                }`}
+              />
+            )}
+            {field.type === "checkbox" && (
+              <input
+                type="checkbox"
+                checked={Boolean(inputValues[field.label])}
+                onChange={(e) =>
+                  handleInputChange(field, e.target.checked ? 1 : 0)
+                }
+              />
+            )}
+            {field.type === "radio" && (
+              <div>
+                {field.options?.map((option, i) => (
+                  <label key={i} className="mr-4">
+                    <input
+                      type="radio"
+                      name={field.label}
+                      value={option}
+                      checked={inputValues[field.label] === option}
+                      onChange={(e) => handleInputChange(field, e.target.value)}
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            )}
+            {field.type === "dropdown" && (
+              <select
+                value={inputValues[field.label] || ""}
+                onChange={(e) => handleInputChange(field, e.target.value)}
+                className="border border-gray-300 rounded p-2 w-full"
+              >
+                <option value="" disabled>
+                  {field.placeholder}
+                </option>
+                {field.options?.map((option, i) => (
+                  <option key={i} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            )}
+            {inputErrors[field.label] && (
+              <span className="text-red-500 text-sm">
+                {inputErrors[field.label]}
+              </span>
+            )}
+          </div>
+        ))}
       </form>
     </div>
   );

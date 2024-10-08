@@ -1,12 +1,18 @@
 import Arrow from "/arrow.svg";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+// import { useState } from "react";
 import Builder from "../components/Builder";
 import Preview from "../components/Preview";
 
-export default function FormBuilder() {
+export default function FormBuilder({
+  formData,
+  setFormData,
+}: {
+  formData: IFormData[];
+  setFormData: React.Dispatch<React.SetStateAction<IFormData[]>>;
+}) {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<IFormData[] | []>([]);
+  // const [formData, setFormData] = useState<IFormData[] | []>([]);
 
   return (
     <div className="flex items-start min-h-screen p-4">
