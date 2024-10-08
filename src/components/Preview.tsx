@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Preview({ formData }: { formData: IFormData[] }) {
   const [inputValues, setInputValues] = useState<
     Record<string, string | number>
   >({});
   const [inputErrors, setInputErrors] = useState<Record<string, string>>({});
+  const navigate = useNavigate();
 
   const handleInputChange = (field: IFormData, value: string | number) => {
     setInputValues((prev) => ({
@@ -48,7 +50,13 @@ export default function Preview({ formData }: { formData: IFormData[] }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted successfully!");
+
+    if (Object.keys(inputErrors).length === 0) {
+      console.log("Form submitted successfully!");
+      navigate("/result");
+    } else {
+      console.log("Please fix the errors before submitting.");
+    }
   };
 
   return (
@@ -130,6 +138,14 @@ export default function Preview({ formData }: { formData: IFormData[] }) {
             )}
           </div>
         ))}
+        {formData.length !== 0 && (
+          <button
+            type="submit"
+            className="w-max mr-2 text-white bg-cyan-900 rounded-[10px] px-4 py-3 hover:bg-cyan-700"
+          >
+            Submit Form
+          </button>
+        )}
       </form>
     </div>
   );

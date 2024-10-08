@@ -1,6 +1,5 @@
 import { useState } from "react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function Builder({
   formData,
@@ -9,8 +8,6 @@ export default function Builder({
   formData: IFormData[];
   setFormData: React.Dispatch<React.SetStateAction<IFormData[]>>;
 }) {
-  const navigate = useNavigate();
-
   const [showModal, setShowModal] = useState<boolean>(false);
   const [fieldType, setFieldType] = useState<string>("text");
   const [label, setLabel] = useState<string>("");
@@ -175,15 +172,6 @@ export default function Builder({
       >
         Add Field
       </button>
-
-      {formData.length !== 0 && (
-        <button
-          onClick={() => navigate("/result")}
-          className="w-max mr-2 text-white bg-cyan-900 rounded-[10px] px-4 py-3 hover:bg-cyan-700"
-        >
-          Submit Form
-        </button>
-      )}
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
