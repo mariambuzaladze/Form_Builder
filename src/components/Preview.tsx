@@ -42,16 +42,26 @@ export default function Preview({ formData }: { formData: IFormData[] }) {
       }
     }
 
-    setInputErrors((prev) => ({
-      ...prev,
-      [field.label]: error,
-    }));
+    setInputErrors((prev) => {
+      const updatedErrors = { ...prev };
+
+      if (error) {
+        updatedErrors[field.label] = error; // Add error if it exists
+      } else {
+        delete updatedErrors[field.label]; // Remove error if it's valid
+      }
+
+      return updatedErrors;
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (Object.keys(inputErrors).length === 0) {
+    // Check if there are any non-empty errors in inputErrors
+    const hasErrors = Object.values(inputErrors).some((error) => error);
+
+    if (!hasErrors) {
       console.log("Form submitted successfully!");
       navigate("/result");
     } else {
