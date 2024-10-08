@@ -57,7 +57,7 @@ export default function Result({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted successfully!");
+    console.log("Form submitted successfully: ", formData);
   };
 
   return (
@@ -143,6 +143,13 @@ export default function Result({
             </div>
           );
         })}
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className="text-white bg-cyan-900 rounded-[10px] px-4 py-3 hover:bg-cyan-700"
+        >
+          console form
+        </button>
       </form>
       <button
         onClick={() => {
